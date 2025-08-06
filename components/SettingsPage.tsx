@@ -3,6 +3,13 @@ import { User, Heart, List, LogOut, ChevronRight, Moon, Sun, Bell, Download } fr
 import { useTheme } from '@/components/ThemeContext';
 import { useAuth } from '@/hooks/useAuth';
 
+interface LocalUser {
+  email: string
+  name: string
+  avatar_url: string
+  id: string
+}
+
 interface SettingsPageProps {
   onPlaylistsClick: () => void;
   onLikedClick: () => void;
@@ -10,7 +17,7 @@ interface SettingsPageProps {
 
 const SettingsPage: React.FC<SettingsPageProps> = ({ onPlaylistsClick, onLikedClick }) => {
   const { isDarkMode, toggleTheme } = useTheme();
-  const { user, signOut } = useAuth();
+  const { user, signOut }: { user: LocalUser | null, signOut: () => void } = useAuth();
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
@@ -24,9 +31,9 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onPlaylistsClick, onLikedCl
         {/* Profile Section */}
         <div className="mb-8">
           <div className={`flex items-center p-4 ${isDarkMode ? 'bg-gray-800' : 'bg-white border border-gray-200'} rounded-lg`}>
-            {user?.user_metadata?.avatar_url ? (
+            {user?.avatar_url ? (
               <img 
-                src={user.user_metadata.avatar_url} 
+                src={user.avatar_url} 
                 alt="Profile" 
                 className="w-16 h-16 rounded-full mr-4"
               />
@@ -37,7 +44,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onPlaylistsClick, onLikedCl
             )}
             <div className="flex-1">
               <h3 className="font-semibold text-lg">
-                {user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User'}
+                {user?.name || user?.email?.split('@')[0] || 'User'}
               </h3>
               <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
                 {user?.email}

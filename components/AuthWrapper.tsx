@@ -2,32 +2,25 @@ import { useAuth } from '@/hooks/useAuth'
 import React, { useEffect } from 'react'
 import LoginPage from './LoginPage'
 
+interface LocalUser {
+  email: string
+  name: string
+  avatar_url: string
+  id: string
+}
+
 interface AuthWrapperProps {
   children: React.ReactNode
 }
 
 const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
-  const { user, loading } = useAuth()
+  const { user, loading }: { user: LocalUser | null, loading: boolean } = useAuth()
 
   // Force re-authentication on page reload if no valid session
-useEffect(() => {
-  const checkAuthOnReload = () => {
-    // Cast the navigation entry to the correct type
-    const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
-
-    const isReload =
-      performance.navigation?.type === 1 || navEntry?.type === 'reload';
-
-    if (isReload && !user && !loading) {
-      console.log('Page reloaded without valid session, redirecting to login');
-      localStorage.clear();
-      sessionStorage.clear();
-    }
-  };
-
-  const timer = setTimeout(checkAuthOnReload, 1000);
-  return () => clearTimeout(timer);
-}, [user, loading]);
+  useEffect(() => {
+    // No need for reload check since we're using localStorage
+    console.log('AuthWrapper: User state:', user ? `${user.name} (${user.email})` : 'Not logged in');
+  }, [user, loading]);
 
   // Show loading spinner with timeout
   if (loading) {

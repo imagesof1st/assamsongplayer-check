@@ -19,6 +19,7 @@ const LoginPage: React.FC = () => {
     setIsSigningIn(true)
     try {
       await signInWithGoogle()
+      // Don't set isSigningIn to false here - let the auth hook handle it
     } catch (error) {
       console.error('Sign in failed:', error)
       setIsSigningIn(false)
